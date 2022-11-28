@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { PostContext, ToggleContext } from "../../services/Context";
 import fetchFilterCategoryApi from "../../utils/fetchFilterCategoryApi";
@@ -8,27 +9,27 @@ function FilterCategory({ setIsCategoryOpened }) {
   const { setIsActionBlockOpened, setFilterSelected, setSearchTerm } =
     useContext(ToggleContext);
 
-  // CATEGORY FILTERS
-  const categoryFilters = [
+  const CATEGORY_FILTERS = [
     "Cocktail",
     "Shot",
     "Coffee_/_Tea",
     "Punch_/_Party Drink",
     "Beer",
     "Soft_Drink",
-  ]; // Every filters c=
+  ];
 
   const handleClick = (category) => {
     setLoading(true);
     fetchFilterCategoryApi(category)
       .then((resPosts) => {
         setPosts(resPosts);
-        setLoading(false);
         setWrongFetch(false);
       })
       .catch(() => {
-        setLoading(false);
         setWrongFetch(true);
+      })
+      .finally(() => {
+        setLoading(false);
       });
     setIsCategoryOpened(false);
     setIsActionBlockOpened(false);
@@ -38,17 +39,22 @@ function FilterCategory({ setIsCategoryOpened }) {
 
   return (
     <ul className="filter-list">
-      {categoryFilters.map((ele) => (
-        // Create a div for every alcoholic filters
-        <li key={ele}>
+      {CATEGORY_FILTERS.map((filter) => (
+        <motion.li
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "initial", opacity: "100%" }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          key={filter}
+        >
           <Link
-            to={`#${ele}`}
+            to="/list"
             className="button"
-            onClick={() => handleClick(ele)}
+            onClick={() => handleClick(filter)}
           >
-            {ele.replace("_/_", " / ").replace("_", " ")}
+            {filter.replace("_/_", " / ").replace("_", " ")}
           </Link>
-        </li>
+        </motion.li>
       ))}
     </ul>
   );

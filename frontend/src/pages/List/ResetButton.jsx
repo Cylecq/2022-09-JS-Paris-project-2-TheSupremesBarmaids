@@ -2,7 +2,11 @@ import { useContext } from "react";
 import { PostContext, ToggleContext } from "../../services/Context";
 import fetchResetApi from "../../utils/fetchResetApi";
 
-function ResetButton() {
+function ResetButton({
+  setIsIngredientsOpened,
+  setIsAlcoholicOpened,
+  setIsCategoryOpened,
+}) {
   const { setPosts, setLoading, setWrongFetch } = useContext(PostContext);
   const { setIsActionBlockOpened } = useContext(ToggleContext);
 
@@ -19,6 +23,9 @@ function ResetButton() {
         setWrongFetch(true);
       });
     setIsActionBlockOpened(false);
+    setIsIngredientsOpened(false);
+    setIsAlcoholicOpened(false);
+    setIsCategoryOpened(false);
   };
 
   return (

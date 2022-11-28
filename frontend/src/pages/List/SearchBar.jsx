@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useContext } from "react";
 import { PostContext, ToggleContext } from "../../services/Context";
 import fetchSearchApi from "../../utils/fetchSearchApi";
 import fetchResetApi from "../../utils/fetchResetApi";
@@ -12,26 +12,10 @@ function SearchBar() {
     setFilterSelected,
   } = useContext(ToggleContext);
 
-  const handleSubmitClick = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     setLoading(true);
-    fetchSearchApi(searchTerm).then((resPosts) => {
-      if (resPosts !== null) {
-        setPosts(resPosts);
-        setLoading(false);
-        setWrongFetch(false);
-      } else {
-        setLoading(false);
-        setWrongFetch(true);
-      }
-    });
-    setIsActionBlockOpened(false);
-    setFilterSelected("");
-  };
-
-  useEffect(() => {
     if (searchTerm.length === 0) {
-      setLoading(true);
       fetchResetApi()
         .then((resPosts) => {
           setPosts(resPosts);
@@ -42,8 +26,21 @@ function SearchBar() {
           setLoading(false);
           setWrongFetch(true);
         });
+    } else {
+      fetchSearchApi(searchTerm).then((resPosts) => {
+        if (resPosts !== null) {
+          setPosts(resPosts);
+          setLoading(false);
+          setWrongFetch(false);
+        } else {
+          setLoading(false);
+          setWrongFetch(true);
+        }
+      });
     }
-  }, [searchTerm]); // Reset list if the search bar is empty
+    setIsActionBlockOpened(false);
+    setFilterSelected("");
+  };
 
   return (
     <form className="search-box" role="search">
@@ -57,11 +54,7 @@ function SearchBar() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <button
-        className="search-button"
-        type="submit"
-        onClick={handleSubmitClick}
-      >
+      <button className="search-button" type="submit" onClick={handleSubmit}>
         <img src="/icones/searchColorLeather.svg" alt="searchIcon" />
       </button>
     </form>

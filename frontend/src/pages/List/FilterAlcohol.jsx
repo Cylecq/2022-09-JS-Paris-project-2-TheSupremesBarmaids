@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { PostContext, ToggleContext } from "../../services/Context";
 import fetchFilterAlcoholicApi from "../../utils/fetchFilterAlcoholicApi";
@@ -8,20 +9,20 @@ function FilterAlcohol({ setIsAlcoholicOpened }) {
   const { setIsActionBlockOpened, setFilterSelected, setSearchTerm } =
     useContext(ToggleContext);
 
-  // ALCOHOLIC FILTERS
-  const alcoholicFilters = ["Alcoholic", "Non_alcoholic", "Optional_alcohol"]; // Every filters a=
+  const ALCOHOLIC_FILTERS = ["Alcoholic", "Non_alcoholic", "Optional_alcohol"];
 
   const handleClick = (alcoholic) => {
     setLoading(true);
     fetchFilterAlcoholicApi(alcoholic)
       .then((resPosts) => {
         setPosts(resPosts);
-        setLoading(false);
         setWrongFetch(false);
       })
       .catch(() => {
-        setLoading(false);
         setWrongFetch(true);
+      })
+      .finally(() => {
+        setLoading(false);
       });
     setIsAlcoholicOpened(false);
     setIsActionBlockOpened(false);
@@ -31,17 +32,22 @@ function FilterAlcohol({ setIsAlcoholicOpened }) {
 
   return (
     <ul className="filter-list">
-      {alcoholicFilters.map((ele) => (
-        // Create a div for every alcoholic filters
-        <li key={ele}>
+      {ALCOHOLIC_FILTERS.map((filter) => (
+        <motion.li
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "initial", opacity: "100%" }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          key={filter}
+        >
           <Link
-            to={`#${ele}`}
+            to="/list"
             className="button"
-            onClick={() => handleClick(ele)}
+            onClick={() => handleClick(filter)}
           >
-            {ele.replace("_", " ")}
+            {filter.replace("_", " ")}
           </Link>
-        </li>
+        </motion.li>
       ))}
     </ul>
   );
