@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { TiChevronLeftOutline, TiChevronRightOutline } from "react-icons/ti";
+import LeftArrowCarousel from "./LeftArrowCarousel";
+import RightArrowCarousel from "./RightArrowCarousel";
 
 const MAX_VISIBILITY = 3;
 
@@ -9,15 +10,11 @@ function Carousel({ children }) {
 
   return (
     <div className="carousel">
-      {active > 0 && (
-        <button
-          type="button"
-          className="actionSlide left"
-          onClick={() => setActive((i) => i - 1)}
-        >
-          <TiChevronLeftOutline />
-        </button>
-      )}
+      <LeftArrowCarousel
+        active={active}
+        setActive={setActive}
+        className="actionSlide left"
+      />
       {React.Children.map(children, (child, i) => (
         <div
           className="cardSlide"
@@ -34,15 +31,12 @@ function Carousel({ children }) {
           {child}
         </div>
       ))}
-      {active < count - 1 && (
-        <button
-          type="button"
-          className="actionSlide right"
-          onClick={() => setActive((i) => i + 1)}
-        >
-          <TiChevronRightOutline />
-        </button>
-      )}
+      <RightArrowCarousel
+        active={active}
+        setActive={setActive}
+        className="actionSlide right"
+        count={count}
+      />
     </div>
   );
 }

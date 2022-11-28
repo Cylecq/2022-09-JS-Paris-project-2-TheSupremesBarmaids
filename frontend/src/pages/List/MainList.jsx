@@ -6,10 +6,20 @@ import ActionBlock from "./ActionBlock";
 import Pagination from "./Pagination";
 
 function MainList() {
+  const POST_PER_PAGE = 12;
+
   const { posts, setPosts, loading, setLoading, wrongFetch, setWrongFetch } =
     useContext(PostContext);
   const [currentPage, setCurrentPage] = useState(1);
-  const POST_PER_PAGE = 12;
+
+  const indexOfLastPost = currentPage * POST_PER_PAGE;
+  const indexOfFirstPost = indexOfLastPost - POST_PER_PAGE;
+  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0 });
@@ -25,15 +35,6 @@ function MainList() {
         setWrongFetch(true);
       });
   }, []);
-
-  const indexOfLastPost = currentPage * POST_PER_PAGE;
-  const indexOfFirstPost = indexOfLastPost - POST_PER_PAGE;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  };
 
   return (
     <main className="mainList containerType1 containerType1--padd20">
