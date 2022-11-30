@@ -1,21 +1,19 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { PostContext, ToggleContext } from "../../services/Context";
 import fetchSearchApi from "../../utils/fetchSearchApi";
 import fetchResetApi from "../../utils/fetchResetApi";
 
 function SearchBar() {
   const { setPosts, setLoading, setWrongFetch } = useContext(PostContext);
-  const {
-    setIsActionBlockOpened,
-    searchTerm,
-    setSearchTerm,
-    setFilterSelected,
-  } = useContext(ToggleContext);
+  const { setIsActionBlockOpened, setSearchTerm, setFilterSelected } =
+    useContext(ToggleContext);
+  const input = useRef(null);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setSearchTerm(input.current.value);
     setLoading(true);
-    if (searchTerm.length === 0) {
+    if (input.current.value.length === 0) {
       fetchResetApi()
         .then((resPosts) => {
           setPosts(resPosts);
@@ -27,7 +25,7 @@ function SearchBar() {
           setWrongFetch(true);
         });
     } else {
-      fetchSearchApi(searchTerm).then((resPosts) => {
+      fetchSearchApi(input.current.value).then((resPosts) => {
         if (resPosts !== null) {
           setPosts(resPosts);
           setLoading(false);
@@ -51,8 +49,7 @@ function SearchBar() {
         className="search-input"
         type="search"
         placeholder="Search Cocktails"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        ref={input}
       />
       <button className="search-button" type="submit" onClick={handleSubmit}>
         <img src="/icones/searchColorLeather.svg" alt="searchIcon" />
