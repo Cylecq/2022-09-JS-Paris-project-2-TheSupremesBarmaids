@@ -1,10 +1,16 @@
-import { useState } from "react";
 import FilterIngredient from "./FilterIngredient";
 
-function DropodownFilterIngredient() {
-  const [isIngredientsOpened, setIsIngredientsOpened] = useState(false);
-  const handleOpenIngredients = () =>
+function DropodownFilterIngredient({
+  isIngredientsOpened,
+  setIsIngredientsOpened,
+  setIsAlcoholicOpened,
+  setIsCategoryOpened,
+}) {
+  const handleOpenIngredients = () => {
     setIsIngredientsOpened(!isIngredientsOpened);
+    setIsAlcoholicOpened(false);
+    setIsCategoryOpened(false);
+  };
 
   return (
     <div className="dropdown-filter">

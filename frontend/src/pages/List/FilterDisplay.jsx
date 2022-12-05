@@ -6,7 +6,7 @@ function FilterDisplay() {
   const { setPosts, setLoading, setWrongFetch } = useContext(PostContext);
   const { filterSelected, setFilterSelected } = useContext(ToggleContext);
 
-  const handleClick = () => {
+  const resetFilter = () => {
     fetchResetApi()
       .then((resPosts) => {
         setPosts(resPosts);
@@ -24,7 +24,7 @@ function FilterDisplay() {
   return (
     <div className="filterDisplay">
       <p className="filterText">Selected Filter :</p>
-      <button type="button" onClick={handleClick}>
+      <button type="button" onClick={resetFilter}>
         <span className="nameFilter">{filterSelected}</span>
         <span className="exitFilter">X</span>
       </button>

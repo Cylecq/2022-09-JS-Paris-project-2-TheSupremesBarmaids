@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { PostContext, ToggleContext } from "../../services/Context";
 import fetchFilterIngredientApi from "../../utils/fetchFilterIngredientApi";
@@ -8,8 +9,7 @@ function FilterIngredient({ setIsIngredientsOpened }) {
   const { setIsActionBlockOpened, setFilterSelected, setSearchTerm } =
     useContext(ToggleContext);
 
-  // INGREDIENT FILTERS
-  const ingredientFilter = [
+  const INGREDIENT_FILTERS = [
     "Gin",
     "Scotch",
     "Tequila",
@@ -20,19 +20,20 @@ function FilterIngredient({ setIsIngredientsOpened }) {
     "Coffee",
     "Lemon",
     "Yoghurt",
-  ]; // Every filters i=
+  ];
 
   const handleClick = (ingredient) => {
     setLoading(true);
     fetchFilterIngredientApi(ingredient)
       .then((resPosts) => {
         setPosts(resPosts);
-        setLoading(false);
         setWrongFetch(false);
       })
       .catch(() => {
-        setLoading(false);
         setWrongFetch(true);
+      })
+      .finally(() => {
+        setLoading(false);
       });
     setIsIngredientsOpened(false);
     setIsActionBlockOpened(false);
@@ -41,20 +42,25 @@ function FilterIngredient({ setIsIngredientsOpened }) {
   };
 
   return (
-    <ul className="filter-list">
-      {ingredientFilter.map((ele) => (
-        // Create a div for every alcoholic filters
-        <li key={ele}>
+    <motion.ul
+      initial={{ height: 0, opacity: 0 }}
+      animate={{ height: "initial", opacity: "100%" }}
+      exit={{ height: 0, opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="filter-list"
+    >
+      {INGREDIENT_FILTERS.map((filter) => (
+        <li key={filter}>
           <Link
-            to={`#${ele}`}
+            to="/list"
             className="button"
-            onClick={() => handleClick(ele)}
+            onClick={() => handleClick(filter)}
           >
-            {ele}
+            {filter}
           </Link>
         </li>
       ))}
-    </ul>
+    </motion.ul>
   );
 }
 

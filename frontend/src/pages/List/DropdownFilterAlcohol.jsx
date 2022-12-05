@@ -1,9 +1,16 @@
-import { useState } from "react";
 import FilterAlcohol from "./FilterAlcohol";
 
-function DropdownFilterAlcohol() {
-  const [isAlcoholicOpened, setIsAlcoholicOpened] = useState(false);
-  const handleOpenAlcoholic = () => setIsAlcoholicOpened(!isAlcoholicOpened);
+function DropdownFilterAlcohol({
+  isAlcoholicOpened,
+  setIsAlcoholicOpened,
+  setIsCategoryOpened,
+  setIsIngredientsOpened,
+}) {
+  const handleOpenAlcoholic = () => {
+    setIsAlcoholicOpened(!isAlcoholicOpened);
+    setIsCategoryOpened(false);
+    setIsIngredientsOpened(false);
+  };
 
   return (
     <div className="dropdown-filter">

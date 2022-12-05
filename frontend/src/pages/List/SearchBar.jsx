@@ -1,37 +1,19 @@
-import { useEffect, useContext } from "react";
+import { useContext, useRef } from "react";
 import { PostContext, ToggleContext } from "../../services/Context";
 import fetchSearchApi from "../../utils/fetchSearchApi";
 import fetchResetApi from "../../utils/fetchResetApi";
 
 function SearchBar() {
   const { setPosts, setLoading, setWrongFetch } = useContext(PostContext);
-  const {
-    setIsActionBlockOpened,
-    searchTerm,
-    setSearchTerm,
-    setFilterSelected,
-  } = useContext(ToggleContext);
+  const { setIsActionBlockOpened, setSearchTerm, setFilterSelected } =
+    useContext(ToggleContext);
+  const input = useRef(null);
 
-  const handleSubmitClick = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
+    setSearchTerm(input.current.value);
     setLoading(true);
-    fetchSearchApi(searchTerm).then((resPosts) => {
-      if (resPosts !== null) {
-        setPosts(resPosts);
-        setLoading(false);
-        setWrongFetch(false);
-      } else {
-        setLoading(false);
-        setWrongFetch(true);
-      }
-    });
-    setIsActionBlockOpened(false);
-    setFilterSelected("");
-  };
-
-  useEffect(() => {
-    if (searchTerm.length === 0) {
-      setLoading(true);
+    if (input.current.value.length === 0) {
       fetchResetApi()
         .then((resPosts) => {
           setPosts(resPosts);
@@ -42,8 +24,21 @@ function SearchBar() {
           setLoading(false);
           setWrongFetch(true);
         });
+    } else {
+      fetchSearchApi(input.current.value).then((resPosts) => {
+        if (resPosts !== null) {
+          setPosts(resPosts);
+          setLoading(false);
+          setWrongFetch(false);
+        } else {
+          setLoading(false);
+          setWrongFetch(true);
+        }
+      });
     }
-  }, [searchTerm]); // Reset list if the search bar is empty
+    setIsActionBlockOpened(false);
+    setFilterSelected("");
+  };
 
   return (
     <form className="search-box" role="search">
@@ -54,14 +49,9 @@ function SearchBar() {
         className="search-input"
         type="search"
         placeholder="Search Cocktails"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        ref={input}
       />
-      <button
-        className="search-button"
-        type="submit"
-        onClick={handleSubmitClick}
-      >
+      <button className="search-button" type="submit" onClick={handleSubmit}>
         <img src="/icones/searchColorLeather.svg" alt="searchIcon" />
       </button>
     </form>
